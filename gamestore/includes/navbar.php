@@ -1,57 +1,36 @@
-<?php
-session_start();
-?>
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-light">
   <div class="container">
-    
-    <a class="navbar-brand" href="index.php">GameStore</a>
-
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-        data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" 
-        aria-label="Toggle navigation">
+    <a class="navbar-brand" href="index.php">GAMESTORE</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto">
-
-        <li class="nav-item">
-          <a class="nav-link" href="games.php">Games</a>
-        </li>
-
-        <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] == 'admin') { ?>
-        <li class="nav-item">
-          <a class="nav-link" href="admin/index.php">Admin Panel</a>
-        </li>
-        <?php } ?>
-
+        <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="store.php">Store</a></li>
+        <li class="nav-item"><a class="nav-link" href="trade.php">Trade</a></li>
       </ul>
-
-      <ul class="navbar-nav">
-
-        <?php if (!isset($_SESSION['user'])) { ?>
-            <li class="nav-item">
-                <a class="nav-link" href="login.php">Login</a>
+      
+      <ul class="navbar-nav ms-auto">
+        <?php if (isset($_SESSION['user'])): ?>
+            <!-- Jika Login -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                    Halo, <?= htmlspecialchars($_SESSION['user']['name']) ?>
+                </a>
+                <ul class="dropdown-menu">
+                    <?php if($_SESSION['user']['role'] == 'admin'): ?>
+                        <li><a class="dropdown-item" href="admin/index.php">Admin Dashboard</a></li>
+                    <?php endif; ?>
+                    <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+                </ul>
             </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="register.php">Register</a>
-            </li>
-        <?php } else { ?>
-            <li class="nav-item">
-                <span class="nav-link">
-                    Hi, <?= $_SESSION['user']['name']; ?>
-                </span>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link text-danger" href="logout.php">Logout</a>
-            </li>
-        <?php } ?>
-
+        <?php else: ?>
+            <!-- Jika Tamu -->
+            <li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>
+            <li class="nav-item"><a class="btn btn-outline-dark btn-sm ms-2" href="register.php">Register</a></li>
+        <?php endif; ?>
       </ul>
     </div>
-
   </div>
 </nav>
