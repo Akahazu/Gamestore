@@ -1,14 +1,40 @@
 <?php
 session_start();
-if(!isset($_SESSION['user'])){
-    header("Location: login.php");
-}
-
 include "config/db.php";
 
-$game_id = $_GET['id'];
-$user_id = $_SESSION['user']['id'];
+// Pastikan user login
+if(!isset($_SESSION['user'])){
+    header("Location: login.php");
+    exit;
+}
 
-mysqli_query($conn, "INSERT INTO orders (user_id, game_id) VALUES ('$user_id', '$game_id')");
-header("Location: games.php");
+if(isset($_POST['pay_now'])){
+    
+    $user_id = $_SESSION['user']['id'];
+    $game_id = $_POST['game_id'];
+    $payment = $_POST['payment']; // Mengambil metode pembayaran (BCA/Gopay/dll)
+    
+    $status = 'Success'; 
+
+    $stmt = $conn->prepare("INSERT INTO orders (user_id, game_id, payment_method, status) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("iiss", $user_id, $game_id, $payment, $status);
+    
+    if($stmt->execute()){
+        
+        echo "<script>
+            alert('Pembayaran Berhasil via $payment! Terima kasih sudah berbelanja.');
+            window.location='store.php';
+        </script>";
+    } else {
+        echo "<script>
+            alert('Gagal memproses pesanan.');
+            window.location='store.php';
+        </script>";
+    }
+
+} else {
+    // Jika user coba akses file ini langsung tanpa lewat checkout
+    header("Location: store.php");
+    exit;
+}
 ?>
